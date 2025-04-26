@@ -1,0 +1,46 @@
+# Ignore build directories
+/build/
+/bin/
+/obj/
+/out/
+
+# Ignore IDE/editor files
+/.idea/
+/.vscode/
+/*.swp
+*.suo
+*.user
+*.userosscache
+*.sln
+*.vcxproj
+
+# Ignore CMake files
+CMakeCache.txt
+CMakeFiles/
+CMakeLists.txt.user
+
+# Ignore compiled object files and libraries
+*.o
+*.a
+*.so
+*.dll
+*.dylib
+*.lib
+*.exe
+*.out
+
+# Ignore debug and release folders (if you're using different folders for different build types)
+*/debug/
+*/release/
+
+# Ignore the system files (macOS, Windows, Linux)
+.DS_Store
+Thumbs.db
+
+# Ignore coverage reports
+*.gcda
+*.gcno
+*.gcov
+
+# Ignore log files
+*.log
