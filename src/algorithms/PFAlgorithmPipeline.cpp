@@ -6,27 +6,33 @@ void PFAlgorithmPipeline::registerStage(std::shared_ptr<PFAlgorithmStage> stage)
 }
 
 std::shared_ptr<PFPipelineObject> PFAlgorithmPipeline::runPipeline(std::shared_ptr<PFPipelineObject> input) {
-    std::shared_ptr<PFPipelineObject> currentOutput = input;
-    // Iterate over stages in order of their orderIndex
-    for (const auto& stagePair : stages_) {
-        auto& stage = stagePair.second;  // Get the stage from the map
-        currentOutput = stage->run(currentOutput);  // Run the stage with the current input
+    std::shared_ptr<PFPipelineObject> currentInput = input;
+
+    // Iterate over stages and call doNextStage for each stage
+    for (std::map<int, std::shared_ptr<PFAlgorithmStage>>::iterator stagePair = stages_.begin(); stagePair != stages_.end(); ++stagePair) { // Loop over all stages
+        // Call doNextStage to run the current stage
+        if (!doNextStage(currentInput)) {
+            // If doNextStage returns false, stop processing further stages
+            // This should never happen in a well-formed pipeline
+            break;
+        }
     }
-    return currentOutput;  // Final output after all stages
+
+    return currentInput;  // Final output after all stages
 }
 
 bool PFAlgorithmPipeline::doNextStage(std::shared_ptr<PFPipelineObject>& currentInput) {
     if (currentStageIndex_ < stages_.size()) {
         // Retrieve the stage from the map using the index as an iterator
-        auto it = stages_.begin();
+        std::map<int, std::shared_ptr<PFAlgorithmStage>>::iterator it = stages_.begin();
         std::advance(it, currentStageIndex_);
-        auto& stage = it->second;
+        std::shared_ptr<PFAlgorithmStage> stage = it->second;
 
         // Execute the current stage with the input
-        auto output = stage->run(currentInput);
+        std::shared_ptr<PFPipelineObject> output = stage->run(currentInput);
 
-        // Store extra information for the current stage
-        extraInfo_[currentStageIndex_] = stage->getExtraInfo();
+        // Append the extra information from the current stage to the `extraInfo_` JSON
+        extraInfo_[stage->getId()] = stage->getExtraInfo();
 
         // Prepare for the next stage
         currentInput = output;
@@ -36,6 +42,6 @@ bool PFAlgorithmPipeline::doNextStage(std::shared_ptr<PFPipelineObject>& current
     return false;  // All stages have been processed
 }
 
-const std::map<int, nlohmann::json>& PFAlgorithmPipeline::getExtraInfo() const {
+const nlohmann::json& PFAlgorithmPipeline::getExtraInfo() const {
     return extraInfo_;
 }

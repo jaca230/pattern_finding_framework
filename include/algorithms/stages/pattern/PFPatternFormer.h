@@ -10,6 +10,7 @@ class PFPatternFormer : public PFAlgorithmStage {
 public:
     PFPatternFormer() {
         setOrderIndex(300);  // Set the order index specific to PFPatternFormer
+        setId("pattern-former");
     }
 
 protected:

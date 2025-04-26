@@ -10,6 +10,7 @@ class PFTrackletFormer : public PFAlgorithmStage {
 public:
     PFTrackletFormer() {
         setOrderIndex(100);  // Set the order index specific to PFTrackletFormer
+        setId("tracklet-former");
     }
 
 protected:

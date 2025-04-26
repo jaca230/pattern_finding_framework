@@ -14,8 +14,8 @@ public:
     int getOrderIndex() const;
     void setOrderIndex(int index);
 
-    int getId() const;
-    void setId(int id);
+    std::string getId() const;
+    void setId(std::string id);
 
     // Extra information
     const nlohmann::json& getExtraInfo() const;
@@ -27,6 +27,6 @@ protected:
 
 private:
     int orderIndex_ = -1;
-    int id_ = -1;
+    std::string id_ = "default-stage-id";
     nlohmann::json extraInfo_;  // Store additional info about the stage
 };

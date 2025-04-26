@@ -1,5 +1,4 @@
 #pragma once
-#include <map>
 #include <memory>
 #include <nlohmann/json.hpp>
 #include "PFAlgorithmStage.h"
@@ -20,10 +19,10 @@ public:
     bool doNextStage(std::shared_ptr<PFPipelineObject>& currentInput);
 
     // Get extra information collected from the pipeline
-    const std::map<int, nlohmann::json>& getExtraInfo() const;
+    const nlohmann::json& getExtraInfo() const;
 
 private:
     std::map<int, std::shared_ptr<PFAlgorithmStage>> stages_;  // Map stages by their orderIndex
-    std::map<int, nlohmann::json> extraInfo_;  // Collect information from each stage
+    nlohmann::json extraInfo_;  // Collect all extra information as a single JSON object
     size_t currentStageIndex_ = 0;  // Keeps track of the next stage to execute
 };

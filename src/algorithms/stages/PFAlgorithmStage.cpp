@@ -13,11 +13,11 @@ int PFAlgorithmStage::getOrderIndex() const {
     return orderIndex_;
 }
 
-void PFAlgorithmStage::setId(int id) {
+void PFAlgorithmStage::setId(std::string id) {
     id_ = id;
 }
 
-int PFAlgorithmStage::getId() const {
+std::string PFAlgorithmStage::getId() const {
     return id_;
 }
 

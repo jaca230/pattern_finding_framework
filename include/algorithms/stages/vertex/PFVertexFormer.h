@@ -10,6 +10,7 @@ class PFVertexFormer : public PFAlgorithmStage {
 public:
     PFVertexFormer() {
         setOrderIndex(200);  // Set the order index specific to PFVertexFormer
+        setId("vertex-former");
     }
 
 protected:
