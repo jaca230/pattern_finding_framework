@@ -6,6 +6,7 @@ public:
     // Constructor
     PFDefaultPatternFormer();
 
-    // Override the runImpl method to implement default behavior (returning an empty set for now)
-    std::set<PFPattern> runImpl(const std::set<PFVertex>& input) override;
+protected:
+    // Override the form method to implement default pattern formation logic
+    std::set<PFPattern> form(const std::set<PFVertex>& vertexSet) override;
 };

@@ -22,13 +22,13 @@ while [[ "$#" -gt 0 ]]; do
     case $1 in
         -o|--overwrite) OVERWRITE=true; shift ;;
         -h|--help) show_help; exit 0 ;;
-        *) echo "[ERROR] Unknown option: $1"; show_help; exit 1 ;;
+        *) echo "[build.sh, ERROR] Unknown option: $1"; show_help; exit 1 ;;
     esac
 done
 
 # If overwrite flag is set, remove the build directory
 if [ "$OVERWRITE" = true ]; then
-    echo "[INFO] Overwrite enabled: Cleaning previous build..."
+    echo "[build.sh, INFO] Overwrite enabled: Cleaning previous build..."
     rm -rf "$BUILD_DIR"
 fi
 
@@ -37,10 +37,10 @@ mkdir -p "$BUILD_DIR"
 cd "$BUILD_DIR" || exit 1
 
 # Run CMake and Make
-echo "[INFO] Configuring the project with CMake..."
+echo "[build.sh, INFO] Configuring the project with CMake..."
 cmake "$BASE_DIR"
 
-echo "[INFO] Building the project..."
+echo "[build.sh, INFO] Building the project..."
 make
 
-echo "[INFO] Build complete. Executables are in: $BUILD_DIR/bin/"
+echo "[build.sh, INFO] Build complete. Executables are in: $BUILD_DIR/bin/"

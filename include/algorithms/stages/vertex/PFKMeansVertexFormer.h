@@ -6,7 +6,6 @@ public:
     // Constructor
     PFKMeansVertexFormer();
 
-    // Override the runImpl method to return an empty set for now
-    std::set<PFVertex> runImpl(const std::set<PFTracklet>& input) override;
-
+    // Override the form method to return an empty set for now
+    std::set<PFVertex> form(const std::set<PFTracklet>& input) override;
 };

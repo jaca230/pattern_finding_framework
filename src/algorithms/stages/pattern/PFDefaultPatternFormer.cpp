@@ -1,12 +1,17 @@
 #include "PFDefaultPatternFormer.h"
 
-// Constructor implementation (you can customize this later if needed)
-PFDefaultPatternFormer::PFDefaultPatternFormer() : PFPatternFormer() {
-    // Optionally customize the constructor here
+PFDefaultPatternFormer::PFDefaultPatternFormer() {
+    // Constructor implementation (if needed, for now it can remain empty)
 }
 
-// Implement the runImpl method to return an empty set for now
-std::set<PFPattern> PFDefaultPatternFormer::runImpl(const std::set<PFVertex>& input) {
-    // For now, simply return an empty set of PFPattern objects
-    return std::set<PFPattern>();
+std::set<PFPattern> PFDefaultPatternFormer::form(const std::set<PFVertex>& vertexSet) {
+    // Placeholder logic — simulate forming patterns
+    std::set<PFPattern> result;
+
+    // Add dummy extra info
+    nlohmann::json info;
+    info["input_vertex_count"] = vertexSet.size();
+    setExtraInfo(info);
+
+    return result;
 }

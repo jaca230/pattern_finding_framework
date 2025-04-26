@@ -1,12 +1,17 @@
 #include "PFKMeansVertexFormer.h"
 
-// Constructor implementation (you can customize this later if needed)
-PFKMeansVertexFormer::PFKMeansVertexFormer() : PFVertexFormer() {
-    // Optionally customize the constructor here
+// Constructor implementation
+PFKMeansVertexFormer::PFKMeansVertexFormer() {
+    // No changes to order index; keeping it the same
 }
 
-// Implement the runImpl method to return an empty set for now
-std::set<PFVertex> PFKMeansVertexFormer::runImpl(const std::set<PFTracklet>& input) {
-    // For now, simply return an empty set of PFVertex objects
-    return std::set<PFVertex>();
+// Override the form method to return an empty set for now
+std::set<PFVertex> PFKMeansVertexFormer::form(const std::set<PFTracklet>& input) {
+    // Add some extra info to the stage's extraInfo_
+    nlohmann::json info;
+    info["processed_tracklets_count"] = input.size();
+    setExtraInfo(info);  // Store extra information in the base class
+
+    // For now, just return an empty set
+    return std::set<PFVertex>(); 
 }

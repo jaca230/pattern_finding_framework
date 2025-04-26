@@ -1,3 +1,6 @@
+# Ignore deprecated folder
+deprecated/
+
 # Ignore build directories
 /build/
 /bin/

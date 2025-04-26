@@ -24,25 +24,25 @@ while [[ "$#" -gt 0 ]]; do
         -h|--help) show_help; exit 0 ;;
         -d|--debug) DEBUG=true; shift ;;
         -v|--valgrind) VALGRIND=true; shift ;;
-        *) echo "[ERROR] Unknown option: $1"; show_help; exit 1 ;;
+        *) echo "[run.sh, ERROR] Unknown option: $1"; show_help; exit 1 ;;
     esac
 done
 
 # Run the executable if it exists
 if [ ! -f "$EXECUTABLE" ]; then
-    echo "[ERROR] Executable not found at: $EXECUTABLE"
+    echo "[run.sh, ERROR] Executable not found at: $EXECUTABLE"
     echo "Try running './build.sh' first."
     exit 1
 fi
 
 # Debugging or Valgrind execution
 if [ "$DEBUG" = true ]; then
-    echo "[INFO] Running with gdb for debugging..."
+    echo "[run.sh, INFO] Running with gdb for debugging..."
     gdb --args "$EXECUTABLE"
 elif [ "$VALGRIND" = true ]; then
-    echo "[INFO] Running with valgrind for memory analysis..."
+    echo "[run.sh, INFO] Running with valgrind for memory analysis..."
     valgrind --leak-check=full --track-origins=yes "$EXECUTABLE"
 else
-    echo "[INFO] Running pattern_finder..."
+    echo "[run.sh, INFO] Running pattern_finder..."
     "$EXECUTABLE"
 fi

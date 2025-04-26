@@ -1,35 +1,32 @@
 #pragma once
 #include <memory>
 #include <nlohmann/json.hpp>
+#include "PFPipelineObject.h"
 
-template<typename InputType, typename OutputType>
 class PFAlgorithmStage {
 public:
     virtual ~PFAlgorithmStage() = default;
 
     // Run method to process input and return output
-    std::unique_ptr<OutputType> run(std::unique_ptr<InputType> input) {
-        OutputType output = runImpl(*input);  // Process input into output
-        return std::make_unique<OutputType>(output);
-    }
+    std::shared_ptr<PFPipelineObject> run(std::shared_ptr<PFPipelineObject> input);
 
-    // Order for PFBaseAlgorithmStage stage
-    int getOrderIndex() const { return orderIndex_; }
-    void setOrderIndex(int index) { orderIndex_ = index; }
+    // Order for PFAlgorithmStage
+    int getOrderIndex() const;
+    void setOrderIndex(int index);
 
-    int getId() const { return id_; }
-    void setId(int id) { id_ = id; }
+    int getId() const;
+    void setId(int id);
 
-    // Implement extra info methods for metadata
-    const nlohmann::json& getExtraInfo() const { return extraInfo_; }
-    void setExtraInfo(const nlohmann::json& info) { extraInfo_ = info; }
+    // Extra information
+    const nlohmann::json& getExtraInfo() const;
+    void setExtraInfo(const nlohmann::json& info);
 
 protected:
     // Derived class must implement this method to convert input into output
-    virtual OutputType runImpl(const InputType& input) = 0;
+    virtual std::shared_ptr<PFPipelineObject> runImpl(std::shared_ptr<PFPipelineObject> input) = 0;
 
 private:
-    int orderIndex_ = -1;  // Default order index, can be overridden
+    int orderIndex_ = -1;
     int id_ = -1;
     nlohmann::json extraInfo_;  // Store additional info about the stage
 };

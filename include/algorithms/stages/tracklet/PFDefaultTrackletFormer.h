@@ -6,6 +6,7 @@ public:
     // Constructor
     PFDefaultTrackletFormer();
 
-    // Override the runImpl method to implement default behavior (returning an empty set for now)
-    std::set<PFTracklet> runImpl(const nlohmann::json& input) override;
+protected:
+    // Override the form method to implement default tracklet formation logic
+    std::set<PFTracklet> form(const nlohmann::json& inputJson) override;
 };
