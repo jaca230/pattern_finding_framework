@@ -1,10 +1,10 @@
 #pragma once
 #include "PFAlgorithmStage.h"
 #include "PFTracklet.h"
-#include "PFTrackletSet.h"
-#include "PFJson.h"  // Include the PFJson class
+#include "PFPipelineObjectContainer.h"
 #include <set>
 #include <memory>
+#include <nlohmann/json.hpp>
 
 class PFTrackletFormer : public PFAlgorithmStage {
 public:
@@ -13,21 +13,18 @@ public:
     }
 
 protected:
-    // The runImpl method will handle the conversion and call the abstract method.
     std::shared_ptr<PFPipelineObject> runImpl(std::shared_ptr<PFPipelineObject> input) override {
-        // Cast the input to PFJson (assuming the input is a PFJson object)
-        std::shared_ptr<PFJson> jsonInput = std::dynamic_pointer_cast<PFJson>(input);
-        if (!jsonInput) {
-            throw std::invalid_argument("Input must be of type PFJson");
+        std::shared_ptr<PFPipelineObjectContainer<nlohmann::json>> jsonContainer =
+            std::dynamic_pointer_cast<PFPipelineObjectContainer<nlohmann::json>>(input);
+        if (!jsonContainer) {
+            throw std::invalid_argument("Input must be PFPipelineObjectContainer<nlohmann::json>");
         }
 
-        // Call the abstract method to form the tracklets using the PFJson object
-        std::set<PFTracklet> tracklets = form(jsonInput->getJson());
+        const nlohmann::json& inputJson = jsonContainer->get();
+        std::set<PFTracklet> tracklets = form(inputJson);
 
-        // Return the result as a PFTrackletSet
-        return std::make_shared<PFTrackletSet>(tracklets);
+        return std::make_shared<PFPipelineObjectContainer<std::set<PFTracklet>>>(tracklets);
     }
 
-    // Abstract method that will be implemented by derived classes to form tracklets
     virtual std::set<PFTracklet> form(const nlohmann::json& inputJson) = 0;
 };

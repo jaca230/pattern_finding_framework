@@ -1,8 +1,8 @@
 #pragma once
 #include "PFAlgorithmStage.h"
 #include "PFTracklet.h"
-#include "PFVertexSet.h"
-#include "PFTrackletSet.h"
+#include "PFVertex.h"
+#include "PFPipelineObjectContainer.h"
 #include <set>
 #include <memory>
 
@@ -13,21 +13,17 @@ public:
     }
 
 protected:
-    // The runImpl method will handle the conversion and call the abstract method.
     std::shared_ptr<PFPipelineObject> runImpl(std::shared_ptr<PFPipelineObject> input) override {
-        // Cast the input to a std::shared_ptr<PFTrackletSet>
-        std::shared_ptr<PFTrackletSet> trackletSet = std::dynamic_pointer_cast<PFTrackletSet>(input);
-        if (!trackletSet) {
-            throw std::invalid_argument("Input must be of type PFTrackletSet");
+        std::shared_ptr<PFPipelineObjectContainer<std::set<PFTracklet>>> trackletContainer =
+            std::dynamic_pointer_cast<PFPipelineObjectContainer<std::set<PFTracklet>>>(input);
+        if (!trackletContainer) {
+            throw std::invalid_argument("Input must be PFPipelineObjectContainer<std::set<PFTracklet>>");
         }
 
-        // Call the abstract method to form the vertices
-        std::set<PFVertex> vertices = form(trackletSet->getTracklets());
+        std::set<PFVertex> vertices = form(trackletContainer->get());
 
-        // Return the result as a PFVertexSet, which is a derived class of PFPipelineObject
-        return std::make_shared<PFVertexSet>(vertices);
+        return std::make_shared<PFPipelineObjectContainer<std::set<PFVertex>>>(vertices);
     }
 
-    // Abstract method that will be implemented by derived classes to form vertices
     virtual std::set<PFVertex> form(const std::set<PFTracklet>& tracklets) = 0;
 };

@@ -1,7 +1,9 @@
 #pragma once
 #include "PFAlgorithmStage.h"
-#include "PFVertexSet.h"
-#include "PFPatternSet.h"
+#include "PFPipelineObjectContainer.h"
+#include "PFVertex.h"
+#include "PFPattern.h"
+#include <set>
 #include <memory>
 
 class PFPatternFormer : public PFAlgorithmStage {
@@ -11,21 +13,18 @@ public:
     }
 
 protected:
-    // The runImpl method will handle the conversion and call the abstract method.
     std::shared_ptr<PFPipelineObject> runImpl(std::shared_ptr<PFPipelineObject> input) override {
-        // Cast the input to PFVertexSet (assuming the input is a PFVertexSet object)
-        std::shared_ptr<PFVertexSet> vertexSetInput = std::dynamic_pointer_cast<PFVertexSet>(input);
-        if (!vertexSetInput) {
-            throw std::invalid_argument("Input must be of type PFVertexSet");
+        std::shared_ptr<PFPipelineObjectContainer<std::set<PFVertex>>> vertexContainer =
+            std::dynamic_pointer_cast<PFPipelineObjectContainer<std::set<PFVertex>>>(input);
+        if (!vertexContainer) {
+            throw std::invalid_argument("Input must be PFPipelineObjectContainer<std::set<PFVertex>>");
         }
 
-        // Call the abstract method to form the patterns
-        std::set<PFPattern> patterns = form(vertexSetInput->getVertices());
+        const std::set<PFVertex>& vertexSet = vertexContainer->get();
+        std::set<PFPattern> patterns = form(vertexSet);
 
-        // Return the result as a PFPatternSet
-        return std::make_shared<PFPatternSet>(patterns);
+        return std::make_shared<PFPipelineObjectContainer<std::set<PFPattern>>>(patterns);
     }
 
-    // Abstract method that will be implemented by derived classes to form patterns
     virtual std::set<PFPattern> form(const std::set<PFVertex>& vertexSet) = 0;
 };
