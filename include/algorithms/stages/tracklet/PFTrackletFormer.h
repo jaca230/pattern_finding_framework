@@ -2,7 +2,7 @@
 #include "PFAlgorithmStage.h"
 #include "PFTracklet.h"
 #include "PFPipelineObjectContainer.h"
-#include <set>
+#include <unordered_set>
 #include <memory>
 #include <nlohmann/json.hpp>
 
@@ -22,10 +22,10 @@ protected:
         }
 
         const nlohmann::json& inputJson = jsonContainer->get();
-        std::set<PFTracklet> tracklets = form(inputJson);
+        std::unordered_set<PFTracklet> tracklets = form(inputJson);
 
-        return std::make_shared<PFPipelineObjectContainer<std::set<PFTracklet>>>(tracklets);
+        return std::make_shared<PFPipelineObjectContainer<std::unordered_set<PFTracklet>>>(tracklets);
     }
 
-    virtual std::set<PFTracklet> form(const nlohmann::json& inputJson) = 0;
+    virtual std::unordered_set<PFTracklet> form(const nlohmann::json& inputJson) = 0;
 };

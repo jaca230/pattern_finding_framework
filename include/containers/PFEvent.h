@@ -11,17 +11,33 @@ class PFEvent {
 public:
     PFEvent(int eventId);
 
-    void addPattern(const std::shared_ptr<PFPattern>& pattern);
-    void setPatterns(const std::set<PFPattern>& patterns);
-
-    const std::unordered_set<std::shared_ptr<PFPattern>>& getPatterns() const;
+    // Accessors
     int getEventId() const;
+    const std::unordered_set<std::shared_ptr<PFPattern>>& getPatterns() const;
+
+    // Mutators
+    void addPattern(const std::shared_ptr<PFPattern>& pattern);
+    void setPatterns(const std::unordered_set<PFPattern>& patterns);
 
     void setPipeline(std::shared_ptr<PFAlgorithmPipeline> pipeline);
     std::shared_ptr<PFAlgorithmPipeline> getPipeline() const;
+
+    // Equality operator based on event_id_
+    bool operator==(const PFEvent& other) const {
+        return event_id == other.event_id;
+    }
 
 private:
     int event_id;
     std::unordered_set<std::shared_ptr<PFPattern>> patterns;
     std::shared_ptr<PFAlgorithmPipeline> pipeline_;
 };
+
+namespace std {
+    template <>
+    struct hash<PFEvent> {
+        std::size_t operator()(const PFEvent& event) const {
+            return std::hash<int>()(event.getEventId());  // Hash based on event_id_
+        }
+    };
+}

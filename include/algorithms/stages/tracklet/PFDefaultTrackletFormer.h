@@ -8,5 +8,5 @@ public:
 
 protected:
     // Override the form method to implement default tracklet formation logic
-    std::set<PFTracklet> form(const nlohmann::json& inputJson) override;
+    std::unordered_set<PFTracklet> form(const nlohmann::json& inputJson) override;
 };

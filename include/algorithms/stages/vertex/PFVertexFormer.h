@@ -3,7 +3,7 @@
 #include "PFTracklet.h"
 #include "PFVertex.h"
 #include "PFPipelineObjectContainer.h"
-#include <set>
+#include <unordered_set>
 #include <memory>
 
 class PFVertexFormer : public PFAlgorithmStage {
@@ -15,16 +15,16 @@ public:
 
 protected:
     std::shared_ptr<PFPipelineObject> runImpl(std::shared_ptr<PFPipelineObject> input) override {
-        std::shared_ptr<PFPipelineObjectContainer<std::set<PFTracklet>>> trackletContainer =
-            std::dynamic_pointer_cast<PFPipelineObjectContainer<std::set<PFTracklet>>>(input);
+        std::shared_ptr<PFPipelineObjectContainer<std::unordered_set<PFTracklet>>> trackletContainer =
+            std::dynamic_pointer_cast<PFPipelineObjectContainer<std::unordered_set<PFTracklet>>>(input);
         if (!trackletContainer) {
-            throw std::invalid_argument("Input must be PFPipelineObjectContainer<std::set<PFTracklet>>");
+            throw std::invalid_argument("Input must be PFPipelineObjectContainer<std::unordered_set<PFTracklet>>");
         }
 
-        std::set<PFVertex> vertices = form(trackletContainer->get());
+        std::unordered_set<PFVertex> vertices = form(trackletContainer->get());
 
-        return std::make_shared<PFPipelineObjectContainer<std::set<PFVertex>>>(vertices);
+        return std::make_shared<PFPipelineObjectContainer<std::unordered_set<PFVertex>>>(vertices);
     }
 
-    virtual std::set<PFVertex> form(const std::set<PFTracklet>& tracklets) = 0;
+    virtual std::unordered_set<PFVertex> form(const std::unordered_set<PFTracklet>& tracklets) = 0;
 };

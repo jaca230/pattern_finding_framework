@@ -3,7 +3,7 @@
 #include "PFPipelineObjectContainer.h"
 #include "PFVertex.h"
 #include "PFPattern.h"
-#include <set>
+#include <unordered_set>
 #include <memory>
 
 class PFPatternFormer : public PFAlgorithmStage {
@@ -15,17 +15,17 @@ public:
 
 protected:
     std::shared_ptr<PFPipelineObject> runImpl(std::shared_ptr<PFPipelineObject> input) override {
-        std::shared_ptr<PFPipelineObjectContainer<std::set<PFVertex>>> vertexContainer =
-            std::dynamic_pointer_cast<PFPipelineObjectContainer<std::set<PFVertex>>>(input);
+        std::shared_ptr<PFPipelineObjectContainer<std::unordered_set<PFVertex>>> vertexContainer =
+            std::dynamic_pointer_cast<PFPipelineObjectContainer<std::unordered_set<PFVertex>>>(input);
         if (!vertexContainer) {
-            throw std::invalid_argument("Input must be PFPipelineObjectContainer<std::set<PFVertex>>");
+            throw std::invalid_argument("Input must be PFPipelineObjectContainer<std::unordered_set<PFVertex>>");
         }
 
-        const std::set<PFVertex>& vertexSet = vertexContainer->get();
-        std::set<PFPattern> patterns = form(vertexSet);
+        const std::unordered_set<PFVertex>& vertexSet = vertexContainer->get();
+        std::unordered_set<PFPattern> patterns = form(vertexSet);
 
-        return std::make_shared<PFPipelineObjectContainer<std::set<PFPattern>>>(patterns);
+        return std::make_shared<PFPipelineObjectContainer<std::unordered_set<PFPattern>>>(patterns);
     }
 
-    virtual std::set<PFPattern> form(const std::set<PFVertex>& vertexSet) = 0;
+    virtual std::unordered_set<PFPattern> form(const std::unordered_set<PFVertex>& vertexSet) = 0;
 };

@@ -6,8 +6,8 @@ void PFEvent::addPattern(const std::shared_ptr<PFPattern>& pattern) {
     patterns.insert(pattern);
 }
 
-void PFEvent::setPatterns(const std::set<PFPattern>& inputPatterns) {
-    patterns.clear(); // (Optional) Clear any previous patterns first
+void PFEvent::setPatterns(const std::unordered_set<PFPattern>& inputPatterns) {
+    patterns.clear();  // Optional: Clear any previous patterns first
     for (const PFPattern& pattern : inputPatterns) {
         patterns.insert(std::make_shared<PFPattern>(pattern));
     }
