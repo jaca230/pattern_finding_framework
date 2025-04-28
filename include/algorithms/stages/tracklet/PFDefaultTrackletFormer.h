@@ -1,12 +1,11 @@
 #pragma once
 #include "PFTrackletFormer.h"
+#include <memory>
 
 class PFDefaultTrackletFormer : public PFTrackletFormer {
 public:
-    // Constructor
     PFDefaultTrackletFormer();
 
 protected:
-    // Override the form method to implement default tracklet formation logic
-    std::unordered_set<PFTracklet> form(const nlohmann::json& inputJson) override;
+    std::unordered_set<std::shared_ptr<PFTracklet>> form(const nlohmann::json& inputJson) override;
 };

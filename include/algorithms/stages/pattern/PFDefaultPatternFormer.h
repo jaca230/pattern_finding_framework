@@ -10,7 +10,8 @@ public:
     PFDefaultPatternFormer();
 
     // Override the form method to implement default pattern formation logic
-    std::unordered_set<PFPattern> form(const std::unordered_set<PFVertex>& vertexSet) override;
+    std::unordered_set<std::shared_ptr<PFPattern>> form(
+        const std::unordered_set<std::shared_ptr<PFVertex>>& vertexSet) override;
 
 private:
     // Helper method to perform depth-first search to find connected vertices

@@ -54,8 +54,8 @@ int main() {
     std::shared_ptr<PFPipelineObject> output = event.getPipeline()->runPipeline(pipelineInput);
 
     // Cast and set patterns
-    std::shared_ptr<PFPipelineObjectContainer<std::unordered_set<PFPattern>>> patternContainer =
-        std::dynamic_pointer_cast<PFPipelineObjectContainer<std::unordered_set<PFPattern>>>(output);
+    std::shared_ptr<PFPipelineObjectContainer<std::unordered_set<std::shared_ptr<PFPattern>>>> patternContainer =
+        std::dynamic_pointer_cast<PFPipelineObjectContainer<std::unordered_set<std::shared_ptr<PFPattern>>>>(output);
 
     if (!patternContainer) {
         std::cerr << "Error: Final output is not a pattern set." << std::endl;
@@ -78,7 +78,6 @@ int main() {
             std::cout << "  Tracklet ID: " << tracklet->getTrackletId() << std::endl;
         }
     }
-
 
     return 0;
 }

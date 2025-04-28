@@ -5,6 +5,7 @@
 #include "PFPattern.h"
 #include <unordered_set>
 #include <memory>
+#include <stdexcept>
 
 class PFPatternFormer : public PFAlgorithmStage {
 public:
@@ -15,17 +16,24 @@ public:
 
 protected:
     std::shared_ptr<PFPipelineObject> runImpl(std::shared_ptr<PFPipelineObject> input) override {
-        std::shared_ptr<PFPipelineObjectContainer<std::unordered_set<PFVertex>>> vertexContainer =
-            std::dynamic_pointer_cast<PFPipelineObjectContainer<std::unordered_set<PFVertex>>>(input);
+        // Dynamically cast the input to the appropriate container type
+        std::shared_ptr<PFPipelineObjectContainer<std::unordered_set<std::shared_ptr<PFVertex>>>> vertexContainer =
+            std::dynamic_pointer_cast<PFPipelineObjectContainer<std::unordered_set<std::shared_ptr<PFVertex>>>>(input);
         if (!vertexContainer) {
-            throw std::invalid_argument("Input must be PFPipelineObjectContainer<std::unordered_set<PFVertex>>");
+            throw std::invalid_argument("Input must be PFPipelineObjectContainer<std::unordered_set<std::shared_ptr<PFVertex>>>");
         }
 
-        const std::unordered_set<PFVertex>& vertexSet = vertexContainer->get();
-        std::unordered_set<PFPattern> patterns = form(vertexSet);
+        // Retrieve the set of shared_ptr<PFVertex> objects from the container
+        const std::unordered_set<std::shared_ptr<PFVertex>>& vertexSet = vertexContainer->get();
+        
+        // Call the form method to create a set of shared_ptr<PFPattern>
+        std::unordered_set<std::shared_ptr<PFPattern>> patterns = form(vertexSet);
 
-        return std::make_shared<PFPipelineObjectContainer<std::unordered_set<PFPattern>>>(patterns);
+        // Return a new container holding the patterns
+        return std::make_shared<PFPipelineObjectContainer<std::unordered_set<std::shared_ptr<PFPattern>>>>(patterns);
     }
 
-    virtual std::unordered_set<PFPattern> form(const std::unordered_set<PFVertex>& vertexSet) = 0;
+    // The form method should now accept and return shared pointers
+    virtual std::unordered_set<std::shared_ptr<PFPattern>> form(
+        const std::unordered_set<std::shared_ptr<PFVertex>>& vertexSet) = 0;
 };

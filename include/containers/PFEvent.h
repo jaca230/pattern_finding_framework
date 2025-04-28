@@ -16,8 +16,13 @@ public:
     const std::unordered_set<std::shared_ptr<PFPattern>>& getPatterns() const;
 
     // Mutators
-    void addPattern(const std::shared_ptr<PFPattern>& pattern);
-    void setPatterns(const std::unordered_set<PFPattern>& patterns);
+    void addPattern(const std::shared_ptr<PFPattern>& pattern);  // Add shared pointer pattern
+    void addPattern(PFPattern pattern);  // Add non-pointer PFPattern (converted to shared_ptr)
+    void addPatterns(const std::unordered_set<std::shared_ptr<PFPattern>>& patterns);  // Add shared pointer set
+    void addPatterns(const std::unordered_set<PFPattern>& patterns);  // Add non-pointer PFPattern set (converted to shared_ptr)
+    
+    void setPatterns(const std::unordered_set<std::shared_ptr<PFPattern>>& patterns);  // Set shared pointer set
+    void setPatterns(const std::unordered_set<PFPattern>& patterns);  // Set non-pointer PFPattern set (converted to shared_ptr)
 
     void setPipeline(std::shared_ptr<PFAlgorithmPipeline> pipeline);
     std::shared_ptr<PFAlgorithmPipeline> getPipeline() const;

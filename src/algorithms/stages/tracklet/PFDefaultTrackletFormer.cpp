@@ -4,8 +4,8 @@ PFDefaultTrackletFormer::PFDefaultTrackletFormer() {
     // Nothing needed for now
 }
 
-std::unordered_set<PFTracklet> PFDefaultTrackletFormer::form(const nlohmann::json& inputJson) {
-    std::unordered_set<PFTracklet> result;  // Change to unordered_set
+std::unordered_set<std::shared_ptr<PFTracklet>> PFDefaultTrackletFormer::form(const nlohmann::json& inputJson) {
+    std::unordered_set<std::shared_ptr<PFTracklet>> result;
     int trackletCounter = 0;
 
     for (const auto& [key, value] : inputJson.items()) {
@@ -21,8 +21,8 @@ std::unordered_set<PFTracklet> PFDefaultTrackletFormer::form(const nlohmann::jso
             continue;  // Skip entries with wrong endpoint size
         }
 
-        PFTracklet tracklet(trackletCounter++, particleId);
-        tracklet.setEndpoints(
+        auto tracklet = std::make_shared<PFTracklet>(trackletCounter++, particleId);
+        tracklet->setEndpoints(
             {endpoint0_vec[0], endpoint0_vec[1], endpoint0_vec[2]},
             {endpoint1_vec[0], endpoint1_vec[1], endpoint1_vec[2]}
         );
@@ -36,5 +36,5 @@ std::unordered_set<PFTracklet> PFDefaultTrackletFormer::form(const nlohmann::jso
     info["input_json_keys"] = inputJson.size();
     setExtraInfo(info);
 
-    return result;  // Return unordered_set
+    return result;
 }

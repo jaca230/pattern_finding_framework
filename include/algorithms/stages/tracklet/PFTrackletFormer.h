@@ -22,10 +22,10 @@ protected:
         }
 
         const nlohmann::json& inputJson = jsonContainer->get();
-        std::unordered_set<PFTracklet> tracklets = form(inputJson);
+        std::unordered_set<std::shared_ptr<PFTracklet>> tracklets = form(inputJson);
 
-        return std::make_shared<PFPipelineObjectContainer<std::unordered_set<PFTracklet>>>(tracklets);
+        return std::make_shared<PFPipelineObjectContainer<std::unordered_set<std::shared_ptr<PFTracklet>>>>(tracklets);
     }
 
-    virtual std::unordered_set<PFTracklet> form(const nlohmann::json& inputJson) = 0;
+    virtual std::unordered_set<std::shared_ptr<PFTracklet>> form(const nlohmann::json& inputJson) = 0;
 };

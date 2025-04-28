@@ -18,12 +18,14 @@ PFKMeansVertexFormer::PFKMeansVertexFormer(double sigma, int nIters)
     : sigma_(sigma), nIters_(nIters) {}
 
 // Main method to form vertices from tracklets
-std::unordered_set<PFVertex> PFKMeansVertexFormer::form(const std::unordered_set<PFTracklet>& input) {
+std::unordered_set<std::shared_ptr<PFVertex>> PFKMeansVertexFormer::form(
+    const std::unordered_set<std::shared_ptr<PFTracklet>>& input) 
+{
     // Collect endpoints from tracklets
     std::vector<std::vector<std::vector<double>>> trackletEndPointsVec;
     for (const auto& tracklet : input) {
         // Retrieve endpoints from tracklet
-        auto [endpoint0, endpoint1] = tracklet.getEndpoints();
+        auto [endpoint0, endpoint1] = tracklet->getEndpoints();
         // Populate endpoints
         std::vector<std::vector<double>> endpoints = {
             {endpoint0[0], endpoint0[1], endpoint0[2]},  // Convert to vector of doubles
@@ -46,6 +48,7 @@ std::unordered_set<PFVertex> PFKMeansVertexFormer::form(const std::unordered_set
     // Create vertices from the vertex-endpoint map
     return createVerticesFromMap(vertexEndpointMap, input);
 }
+
 
 // Compute Bayesian Information Criterion (BIC) for the clustering solution
 double PFKMeansVertexFormer::computeBIC(double sigma, int k, const std::vector<std::vector<double>>& clusterCenters, 
@@ -205,7 +208,7 @@ std::vector<std::vector<double>> PFKMeansVertexFormer::computeNewVertices(
 
 
 // Check if a vertex is empty (no assigned endpoints)
-bool PFKMeansVertexFormer::checkIfEmptyVertex(int k, const std::unordered_set<int>& indices) {
+bool PFKMeansVertexFormer::checkIfEmptyVertex(int k, const std::unordered_set<int>& indices) const {
     return indices.size() != static_cast<size_t>(k);
 }
 
@@ -322,34 +325,34 @@ PFKMeansVertexFormer::constrainedKMeans(const std::vector<std::vector<std::vecto
 
 
 
-std::unordered_set<PFVertex> PFKMeansVertexFormer::createVerticesFromMap(const std::vector<std::vector<int>>& vertexEndpointMap, const std::unordered_set<PFTracklet>& tracklets) {
+std::unordered_set<std::shared_ptr<PFVertex>> PFKMeansVertexFormer::createVerticesFromMap(
+    const std::vector<std::vector<int>>& vertexEndpointMap, 
+    const std::unordered_set<std::shared_ptr<PFTracklet>>& tracklets) 
+{
     std::unordered_map<int, std::unordered_set<std::shared_ptr<PFTracklet>>> vertexToTracklets;
 
     // Map tracklets to corresponding vertex indices
     auto trackletIter = tracklets.begin();
     for (size_t i = 0; i < vertexEndpointMap.size(); ++i) {
         for (int vIdx : vertexEndpointMap[i]) {
-            vertexToTracklets[vIdx].insert(std::make_shared<PFTracklet>(*trackletIter));  // Create a shared pointer to the PFTracklet
+            // Create a shared pointer to the PFTracklet and add to the vertex's tracklet set
+            vertexToTracklets[vIdx].insert(*trackletIter);
         }
         ++trackletIter;
     }
 
     // Create vertices and associate them with tracklets
-    std::unordered_set<PFVertex> vertices;
+    std::unordered_set<std::shared_ptr<PFVertex>> vertices;
     for (const auto& [vertexIdx, trackletSet] : vertexToTracklets) {
-        PFVertex vertex(vertexIdx);  // Create a PFVertex with the given vertex index
+        // Create a shared pointer for PFVertex
+        auto vertex = std::make_shared<PFVertex>(vertexIdx);  
         for (const auto& tracklet : trackletSet) {
-            vertex.addTracklet(tracklet);  // Add the shared pointer to the vertex
-            //TODO: This creates a shared pointer for some tracklets multiple times
-            // In other words, we making copies for the same tracklet into and putting a pointer 
-            // to that copy in multiple vertices.
-            // It would be better to use a shared pointer to avoid this.
-            // We could make each step of the pipeline deal with sets of shared pointers instead as one fix
-            // But for now, this is fine, it at most creates a factor of 2 overhead
+            vertex->addTracklet(tracklet);  // Add the shared pointer to the vertex
         }
-        vertices.insert(vertex);  // Insert the vertex into the set
+        vertices.insert(vertex);  // Insert the shared pointer to the vertex into the set
     }
 
     return vertices;
 }
+
 

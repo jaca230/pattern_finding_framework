@@ -15,16 +15,16 @@ public:
 
 protected:
     std::shared_ptr<PFPipelineObject> runImpl(std::shared_ptr<PFPipelineObject> input) override {
-        std::shared_ptr<PFPipelineObjectContainer<std::unordered_set<PFTracklet>>> trackletContainer =
-            std::dynamic_pointer_cast<PFPipelineObjectContainer<std::unordered_set<PFTracklet>>>(input);
+        std::shared_ptr<PFPipelineObjectContainer<std::unordered_set<std::shared_ptr<PFTracklet>>>> trackletContainer =
+            std::dynamic_pointer_cast<PFPipelineObjectContainer<std::unordered_set<std::shared_ptr<PFTracklet>>>>(input);
         if (!trackletContainer) {
-            throw std::invalid_argument("Input must be PFPipelineObjectContainer<std::unordered_set<PFTracklet>>");
+            throw std::invalid_argument("Input must be PFPipelineObjectContainer<std::unordered_set<std::shared_ptr<PFTracklet>>>");
         }
 
-        std::unordered_set<PFVertex> vertices = form(trackletContainer->get());
+        std::unordered_set<std::shared_ptr<PFVertex>> vertices = form(trackletContainer->get());
 
-        return std::make_shared<PFPipelineObjectContainer<std::unordered_set<PFVertex>>>(vertices);
+        return std::make_shared<PFPipelineObjectContainer<std::unordered_set<std::shared_ptr<PFVertex>>>>(vertices);
     }
 
-    virtual std::unordered_set<PFVertex> form(const std::unordered_set<PFTracklet>& tracklets) = 0;
+    virtual std::unordered_set<std::shared_ptr<PFVertex>> form(const std::unordered_set<std::shared_ptr<PFTracklet>>& tracklets) = 0;
 };

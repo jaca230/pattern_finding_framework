@@ -5,15 +5,28 @@
 
 class PFVertex {
 public:
-    using TrackletPtr = std::shared_ptr<PFTracklet>;
-
     PFVertex(int vertexId);
 
-    // Add a tracklet to the vertex
-    void addTracklet(const TrackletPtr& tracklet);
+    // Accessor to get all tracklets
+    const std::unordered_set<std::shared_ptr<PFTracklet>>& getTracklets() const;
 
-    // Get all tracklets
-    const std::unordered_set<TrackletPtr>& getTracklets() const;
+    // Add a single tracklet to the vertex (shared_ptr version)
+    void addTracklet(const std::shared_ptr<PFTracklet>& tracklet);
+
+    // Add a single tracklet to the vertex (non-shared_ptr version)
+    void addTracklet(PFTracklet tracklet);
+
+    // Add multiple tracklets to the vertex (shared_ptr version)
+    void addTracklets(const std::unordered_set<std::shared_ptr<PFTracklet>>& tracklets);
+
+    // Add multiple tracklets to the vertex (non-shared_ptr version)
+    void addTracklets(const std::unordered_set<PFTracklet>& tracklets);
+
+    // Set tracklets (clear existing ones and add new)
+    void setTracklets(const std::unordered_set<std::shared_ptr<PFTracklet>>& tracklets);
+
+    // Set tracklets (clear existing ones and add new) (non-shared_ptr version)
+    void setTracklets(const std::unordered_set<PFTracklet>& tracklets);
 
     // Get the vertex ID
     int getId() const;
@@ -25,7 +38,7 @@ public:
 
 private:
     int vertex_id_;
-    std::unordered_set<TrackletPtr> tracklets_;
+    std::unordered_set<std::shared_ptr<PFTracklet>> tracklets_;
 };
 
 // Hash specialization for PFVertex

@@ -8,14 +8,11 @@ PFDefaultPatternFormer::PFDefaultPatternFormer() {
 }
 
 // Form patterns by identifying connected components
-std::unordered_set<PFPattern> PFDefaultPatternFormer::form(const std::unordered_set<PFVertex>& vertexSet) {
-    std::unordered_set<PFPattern> patterns;
-    std::unordered_set<std::shared_ptr<PFVertex>> unvisited;
-
-    // Convert the input vertex set to shared_ptr
-    for (const auto& vertex : vertexSet) {
-        unvisited.insert(std::make_shared<PFVertex>(vertex));
-    }
+std::unordered_set<std::shared_ptr<PFPattern>> PFDefaultPatternFormer::form(
+    const std::unordered_set<std::shared_ptr<PFVertex>>& vertexSet) 
+{
+    std::unordered_set<std::shared_ptr<PFPattern>> patterns;
+    std::unordered_set<std::shared_ptr<PFVertex>> unvisited = vertexSet;  // Directly initialize with vertexSet
 
     int pattern_id = 0;  // Start pattern ID counter
 
@@ -28,7 +25,7 @@ std::unordered_set<PFPattern> PFDefaultPatternFormer::form(const std::unordered_
         auto component = dfs(start, unvisited);
 
         // Create a pattern with the current pattern_id
-        PFPattern pattern(pattern_id);
+        auto pattern = std::make_shared<PFPattern>(pattern_id);
 
         // Debug: Print the tracklet IDs in each vertex of the component
         std::cout << "Pattern ID: " << pattern_id << std::endl;
@@ -42,7 +39,7 @@ std::unordered_set<PFPattern> PFDefaultPatternFormer::form(const std::unordered_
         }
 
         // Add vertices to the pattern in two steps
-        pattern.addVertices(component);  // Add all the connected vertices
+        pattern->addVertices(component);  // Add all the connected vertices
 
         // Add the pattern to the set of patterns
         patterns.insert(pattern);
